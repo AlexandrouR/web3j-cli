@@ -37,7 +37,6 @@ public class JavaProject extends BaseProject<JavaProject, JavaTemplateProvider> 
                 projectStructure);
     }
 
-
     public JavaTemplateProvider getTemplateProvider() {
         TemplateProvider.TemplateBuilder templateBuilder = getTemplateBuilder();
         if (command.equals("new")) {
@@ -78,10 +77,7 @@ public class JavaProject extends BaseProject<JavaProject, JavaTemplateProvider> 
         }
         return templateBuilder;
     }
-
-
 }
-
 
 public static class JavaBuilder extends BaseProject.BaseBuilder {
 
@@ -99,4 +95,3 @@ public static class JavaBuilder extends BaseProject.BaseBuilder {
                 projectStructure);
     }
 }
-

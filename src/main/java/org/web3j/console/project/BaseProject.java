@@ -66,12 +66,12 @@ public abstract class BaseProject<T extends BaseProject<T, P>, P extends Templat
         if (!isWindows()) {
             setExecutable(pathToDirectory, "gradlew");
             executeBuild(
-                    new File(pathToDirectory), new String[]{"bash", "-c", "./gradlew build -q"});
+                    new File(pathToDirectory), new String[] {"bash", "-c", "./gradlew build -q"});
         } else {
             setExecutable(pathToDirectory, "gradlew.bat");
             executeBuild(
                     new File(pathToDirectory),
-                    new String[]{"cmd.exe", "/c", "gradlew.bat build -q"});
+                    new String[] {"cmd.exe", "/c", "gradlew.bat build -q"});
         }
     }
 
@@ -107,11 +107,11 @@ public abstract class BaseProject<T extends BaseProject<T, P>, P extends Templat
         if (!isWindows()) {
             executeProcess(
                     new File(pathToDirectory),
-                    new String[]{"bash", "./gradlew", "shadowJar", "-q"});
+                    new String[] {"bash", "./gradlew", "shadowJar", "-q"});
         } else {
             executeProcess(
                     new File(pathToDirectory),
-                    new String[]{"cmd.exe", "/c", "./gradlew.bat shadowJar", "-q"});
+                    new String[] {"cmd.exe", "/c", "./gradlew.bat shadowJar", "-q"});
         }
     }
 
@@ -126,14 +126,14 @@ public abstract class BaseProject<T extends BaseProject<T, P>, P extends Templat
     protected void generateTests(ProjectStructure projectStructure) throws IOException {
 
         new JavaTestCreator(
-                projectStructure.getGeneratedJavaWrappers(),
-                projectStructure.getPathToTestDirectory())
+                        projectStructure.getGeneratedJavaWrappers(),
+                        projectStructure.getPathToTestDirectory())
                 .generate();
     }
 
     protected void generateWallet()
             throws CipherException, InvalidAlgorithmParameterException, NoSuchAlgorithmException,
-            NoSuchProviderException, IOException {
+                    NoSuchProviderException, IOException {
         projectStructure.createWalletDirectory();
         projectWallet =
                 new ProjectWallet(
@@ -150,7 +150,7 @@ public abstract class BaseProject<T extends BaseProject<T, P>, P extends Templat
 
     public void createProject()
             throws IOException, InterruptedException, NoSuchAlgorithmException,
-            NoSuchProviderException, InvalidAlgorithmParameterException, CipherException {
+                    NoSuchProviderException, InvalidAlgorithmParameterException, CipherException {
         generateTopLevelDirectories(projectStructure);
         if (withWallet) {
             generateWallet();

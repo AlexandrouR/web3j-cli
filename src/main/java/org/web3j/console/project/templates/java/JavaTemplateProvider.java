@@ -81,7 +81,8 @@ public class JavaTemplateProvider extends TemplateProvider<JavaTemplateProvider>
                 projectStructure.getWrapperPath() + File.separator + "gradle-wrapper.jar");
     }
 
-    public static class JavaTemplateBuilder extends TemplateProvider.TemplateBuilder<JavaTemplateProvider, JavaTemplateBuilder> {
+    public static class JavaTemplateBuilder
+            extends TemplateProvider.TemplateBuilder<JavaTemplateProvider, JavaTemplateBuilder> {
 
         @Override
         public JavaTemplateProvider build() {
@@ -101,6 +102,4 @@ public class JavaTemplateProvider extends TemplateProvider<JavaTemplateProvider>
                     walletNameReplacement);
         }
     }
-
-
 }

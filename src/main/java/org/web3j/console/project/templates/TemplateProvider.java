@@ -164,7 +164,8 @@ public abstract class TemplateProvider<T extends TemplateProvider<T>> {
                 projectStructure.getWrapperPath() + File.separator + "gradle-wrapper.jar");
     }
 
-    public abstract static class TemplateBuilder<P extends TemplateProvider<P>, B extends TemplateBuilder<P, B>> {
+    public abstract static class TemplateBuilder<
+            P extends TemplateProvider<P>, B extends TemplateBuilder<P, B>> {
         protected String mainJavaClass;
         protected String gradleBuild;
         protected String gradleSettings;
@@ -189,20 +190,17 @@ public abstract class TemplateProvider<T extends TemplateProvider<T>> {
             return this;
         }
 
-        public TemplateBuilder<P, B> withGradleSettings(
-                String gradleSettings) {
+        public TemplateBuilder<P, B> withGradleSettings(String gradleSettings) {
             this.gradleSettings = gradleSettings;
             return this;
         }
 
-        public TemplateBuilder<P, B> withWrapperGradleSettings(
-                String gradlewWrapperSettings) {
+        public TemplateBuilder<P, B> withWrapperGradleSettings(String gradlewWrapperSettings) {
             this.gradlewWrapperSettings = gradlewWrapperSettings;
             return this;
         }
 
-        public TemplateBuilder<P, B> withGradleBatScript(
-                String gradlewBatScript) {
+        public TemplateBuilder<P, B> withGradleBatScript(String gradlewBatScript) {
             this.gradlewBatScript = gradlewBatScript;
             return this;
         }
@@ -212,44 +210,37 @@ public abstract class TemplateProvider<T extends TemplateProvider<T>> {
             return this;
         }
 
-        public TemplateBuilder<P, B> withGradlewWrapperJar(
-                String gradlewWrapperJar) {
+        public TemplateBuilder<P, B> withGradlewWrapperJar(String gradlewWrapperJar) {
             this.gradlewWrapperJar = gradlewWrapperJar;
             return this;
         }
 
-        public TemplateBuilder<P, B> withSolidityProject(
-                String solidityProject) {
+        public TemplateBuilder<P, B> withSolidityProject(String solidityProject) {
             this.solidityProject = solidityProject;
             return this;
         }
 
-        public TemplateBuilder<P, B> withPathToSolidityFolder(
-                String pathToSolidityFolder) {
+        public TemplateBuilder<P, B> withPathToSolidityFolder(String pathToSolidityFolder) {
             this.pathToSolidityFolder = pathToSolidityFolder;
             return this;
         }
 
-        public TemplateBuilder<P, B> withPackageNameReplacement(
-                String packageNameReplacement) {
+        public TemplateBuilder<P, B> withPackageNameReplacement(String packageNameReplacement) {
             this.packageNameReplacement = packageNameReplacement;
             return this;
         }
 
-        public TemplateBuilder<P, B> withProjectNameReplacement(
-                String projectNameReplacement) {
+        public TemplateBuilder<P, B> withProjectNameReplacement(String projectNameReplacement) {
             this.projectNameReplacement = projectNameReplacement;
             return this;
         }
 
-        public TemplateBuilder<P, B> withPasswordFileName(
-                String passwordFileName) {
+        public TemplateBuilder<P, B> withPasswordFileName(String passwordFileName) {
             this.passwordFileName = passwordFileName;
             return this;
         }
 
-        public TemplateBuilder<P, B> withWalletNameReplacement(
-                String walletNameReplacement) {
+        public TemplateBuilder<P, B> withWalletNameReplacement(String walletNameReplacement) {
             this.walletNameReplacement = walletNameReplacement;
             return this;
         }

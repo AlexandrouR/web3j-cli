@@ -81,7 +81,8 @@ public class KotlinTemplateProvider extends TemplateProvider<KotlinTemplateProvi
                 projectStructure.getWrapperPath() + File.separator + "gradle-wrapper.jar");
     }
 
-    public static class KotlinTemplateBuilder extends TemplateProvider.TemplateBuilder<KotlinTemplateProvider> {
+    public static class KotlinTemplateBuilder
+            extends TemplateProvider.TemplateBuilder<KotlinTemplateProvider> {
         public KotlinTemplateProvider build() {
             return new KotlinTemplateProvider(
                     mainJavaClass,
