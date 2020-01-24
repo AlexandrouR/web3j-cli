@@ -10,7 +10,7 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.web3j.console.project.templates.kotlin;
+package org.web3j.console.project.templates.java;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,9 +20,9 @@ import org.web3j.console.project.ProjectWriter;
 import org.web3j.console.project.templates.TemplateProvider;
 import org.web3j.console.project.utils.InputVerifier;
 
-public class KotlinTemplateProvider extends TemplateProvider<KotlinTemplateProvider> {
+public class JavaTemplateProvider extends TemplateProvider<JavaTemplateProvider> {
 
-    KotlinTemplateProvider(
+    JavaTemplateProvider(
             String mainJavaClass,
             String solidityContract,
             String pathToSolidityFolder,
@@ -81,9 +81,11 @@ public class KotlinTemplateProvider extends TemplateProvider<KotlinTemplateProvi
                 projectStructure.getWrapperPath() + File.separator + "gradle-wrapper.jar");
     }
 
-    public static class KotlinTemplateBuilder extends TemplateProvider.TemplateBuilder<KotlinTemplateProvider> {
-        public KotlinTemplateProvider build() {
-            return new KotlinTemplateProvider(
+    public static class JavaTemplateBuilder extends TemplateProvider.TemplateBuilder<JavaTemplateProvider, JavaTemplateBuilder> {
+
+        @Override
+        public JavaTemplateProvider build() {
+            return new JavaTemplateProvider(
                     mainJavaClass,
                     solidityProject,
                     pathToSolidityFolder,
@@ -99,4 +101,6 @@ public class KotlinTemplateProvider extends TemplateProvider<KotlinTemplateProvi
                     walletNameReplacement);
         }
     }
+
+
 }

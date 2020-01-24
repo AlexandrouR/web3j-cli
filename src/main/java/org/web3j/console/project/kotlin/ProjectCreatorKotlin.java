@@ -72,9 +72,9 @@ public class ProjectCreatorKotlin {
             boolean withFatJar,
             boolean withSampleCode) {
         try {
-            KotlinBuilder kotlinBuilder =
-                    (KotlinBuilder)
-                            new KotlinBuilder()
+            KotlinProject.KotlinBuilder kotlinBuilder =
+                    (KotlinProject.KotlinBuilder)
+                            new KotlinProject.KotlinBuilder()
                                     .withProjectName(this.projectName)
                                     .withRootDirectory(this.root)
                                     .withPackageName(this.packageName)
@@ -84,7 +84,7 @@ public class ProjectCreatorKotlin {
                                     .withSampleCode(withSampleCode)
                                     .withFatJar(withFatJar);
             solidityFile.map(File::getAbsolutePath).ifPresent(kotlinBuilder::withSolidityFile);
-            KotlinProject kotlinProject = (KotlinProject) kotlinBuilder.build();
+            KotlinProject kotlinProject = kotlinBuilder.build();
             kotlinProject.createProject();
             onSuccess(kotlinProject);
         } catch (final Exception e) {

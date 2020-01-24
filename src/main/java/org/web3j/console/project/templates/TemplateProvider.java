@@ -19,7 +19,7 @@ import org.web3j.console.project.ProjectStructure;
 import org.web3j.console.project.ProjectWriter;
 import org.web3j.console.project.utils.InputVerifier;
 
-public class TemplateProvider {
+public abstract class TemplateProvider<T extends TemplateProvider<T>> {
     private final String mainJavaClass;
     protected final String solidityContract;
     protected final String pathToSolidityFolder;
@@ -162,5 +162,98 @@ public class TemplateProvider {
         ProjectWriter.copyResourceFile(
                 getGradlewJar(),
                 projectStructure.getWrapperPath() + File.separator + "gradle-wrapper.jar");
+    }
+
+    public abstract static class TemplateBuilder<P extends TemplateProvider<P>, B extends TemplateBuilder<P, B>> {
+        protected String mainJavaClass;
+        protected String gradleBuild;
+        protected String gradleSettings;
+        protected String gradlewWrapperSettings;
+        protected String gradlewBatScript;
+        protected String gradlewScript;
+        protected String solidityProject;
+        protected String gradlewWrapperJar;
+        protected String packageNameReplacement;
+        protected String projectNameReplacement;
+        protected String passwordFileName;
+        protected String walletNameReplacement;
+        protected String pathToSolidityFolder;
+
+        public TemplateBuilder<P, B> withMainJavaClass(String mainJavaClass) {
+            this.mainJavaClass = mainJavaClass;
+            return this;
+        }
+
+        public TemplateBuilder<P, B> withGradleBuild(String gradleBuild) {
+            this.gradleBuild = gradleBuild;
+            return this;
+        }
+
+        public TemplateBuilder<P, B> withGradleSettings(
+                String gradleSettings) {
+            this.gradleSettings = gradleSettings;
+            return this;
+        }
+
+        public TemplateBuilder<P, B> withWrapperGradleSettings(
+                String gradlewWrapperSettings) {
+            this.gradlewWrapperSettings = gradlewWrapperSettings;
+            return this;
+        }
+
+        public TemplateBuilder<P, B> withGradleBatScript(
+                String gradlewBatScript) {
+            this.gradlewBatScript = gradlewBatScript;
+            return this;
+        }
+
+        public TemplateBuilder<P, B> withGradleScript(String gradlewScript) {
+            this.gradlewScript = gradlewScript;
+            return this;
+        }
+
+        public TemplateBuilder<P, B> withGradlewWrapperJar(
+                String gradlewWrapperJar) {
+            this.gradlewWrapperJar = gradlewWrapperJar;
+            return this;
+        }
+
+        public TemplateBuilder<P, B> withSolidityProject(
+                String solidityProject) {
+            this.solidityProject = solidityProject;
+            return this;
+        }
+
+        public TemplateBuilder<P, B> withPathToSolidityFolder(
+                String pathToSolidityFolder) {
+            this.pathToSolidityFolder = pathToSolidityFolder;
+            return this;
+        }
+
+        public TemplateBuilder<P, B> withPackageNameReplacement(
+                String packageNameReplacement) {
+            this.packageNameReplacement = packageNameReplacement;
+            return this;
+        }
+
+        public TemplateBuilder<P, B> withProjectNameReplacement(
+                String projectNameReplacement) {
+            this.projectNameReplacement = projectNameReplacement;
+            return this;
+        }
+
+        public TemplateBuilder<P, B> withPasswordFileName(
+                String passwordFileName) {
+            this.passwordFileName = passwordFileName;
+            return this;
+        }
+
+        public TemplateBuilder<P, B> withWalletNameReplacement(
+                String walletNameReplacement) {
+            this.walletNameReplacement = walletNameReplacement;
+            return this;
+        }
+
+        public abstract P build();
     }
 }

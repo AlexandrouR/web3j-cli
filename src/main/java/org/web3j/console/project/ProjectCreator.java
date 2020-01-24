@@ -21,6 +21,7 @@ import java.util.Optional;
 
 import picocli.CommandLine;
 
+import org.web3j.console.project.java.JavaProject;
 import org.web3j.console.project.utils.InputVerifier;
 
 import static org.web3j.codegen.Console.exitError;
@@ -71,21 +72,22 @@ public class ProjectCreator {
             boolean withSampleCode,
             String command) {
         try {
-            BaseBuilder baseBuilder =
-                    new BaseBuilder()
-                            .withProjectName(this.projectName)
-                            .withRootDirectory(this.root)
-                            .withPackageName(this.packageName)
-                            .withTests(withTests)
-                            .withWalletProvider(withWalletProvider)
-                            .withCommand(command)
-                            .withSampleCode(withSampleCode)
-                            .withFatJar(withFatJar);
-            solidityFile.map(File::getAbsolutePath).ifPresent(baseBuilder::withSolidityFile);
+            JavaProject.JavaBuilder javaBuilder =
+                    (JavaProject.JavaBuilder)
+                            new JavaProject.JavaBuilder()
+                                    .withProjectName(this.projectName)
+                                    .withRootDirectory(this.root)
+                                    .withPackageName(this.packageName)
+                                    .withTests(withTests)
+                                    .withWalletProvider(withWalletProvider)
+                                    .withCommand(command)
+                                    .withSampleCode(withSampleCode)
+                                    .withFatJar(withFatJar);
+            solidityFile.map(File::getAbsolutePath).ifPresent(javaBuilder::withSolidityFile);
 
-            BaseProject baseProject = baseBuilder.build();
-            baseProject.createProject();
-            onSuccess(baseProject);
+            JavaProject javaProject = javaBuilder.build();
+            javaProject.createProject();
+            onSuccess(javaProject);
         } catch (final Exception e) {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));

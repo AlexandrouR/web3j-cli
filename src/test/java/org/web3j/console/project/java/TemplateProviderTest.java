@@ -17,8 +17,8 @@ import java.io.IOException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import org.web3j.console.project.templates.TemplateBuilder;
 import org.web3j.console.project.templates.TemplateProvider;
+import org.web3j.console.project.templates.java.JavaTemplateProvider;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -28,7 +28,7 @@ public class TemplateProviderTest {
     @BeforeEach
     public void init() throws IOException {
         templateProvider =
-                new TemplateBuilder()
+                new JavaTemplateProvider.JavaTemplateBuilder()
                         .withGradleBatScript("gradlew.bat.template")
                         .withGradleScript("gradlew.template")
                         .withMainJavaClass("Template.java")

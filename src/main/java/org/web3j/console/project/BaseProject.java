@@ -19,15 +19,13 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 
 import org.web3j.codegen.Console;
-import org.web3j.commons.JavaVersion;
 import org.web3j.console.project.java.JavaTestCreator;
-import org.web3j.console.project.templates.TemplateBuilder;
 import org.web3j.console.project.templates.TemplateProvider;
 import org.web3j.console.project.utils.ProgressCounter;
 import org.web3j.console.project.utils.ProjectUtils;
 import org.web3j.crypto.CipherException;
 
-public class BaseProject {
+public abstract class BaseProject<T extends BaseProject<T, P>, P extends TemplateProvider<P>> {
     protected final boolean withTests;
     protected final boolean withFatJar;
     protected final boolean withWallet;
@@ -68,12 +66,12 @@ public class BaseProject {
         if (!isWindows()) {
             setExecutable(pathToDirectory, "gradlew");
             executeBuild(
-                    new File(pathToDirectory), new String[] {"bash", "-c", "./gradlew build -q"});
+                    new File(pathToDirectory), new String[]{"bash", "-c", "./gradlew build -q"});
         } else {
             setExecutable(pathToDirectory, "gradlew.bat");
             executeBuild(
                     new File(pathToDirectory),
-                    new String[] {"cmd.exe", "/c", "gradlew.bat build -q"});
+                    new String[]{"cmd.exe", "/c", "gradlew.bat build -q"});
         }
     }
 
@@ -109,11 +107,11 @@ public class BaseProject {
         if (!isWindows()) {
             executeProcess(
                     new File(pathToDirectory),
-                    new String[] {"bash", "./gradlew", "shadowJar", "-q"});
+                    new String[]{"bash", "./gradlew", "shadowJar", "-q"});
         } else {
             executeProcess(
                     new File(pathToDirectory),
-                    new String[] {"cmd.exe", "/c", "./gradlew.bat shadowJar", "-q"});
+                    new String[]{"cmd.exe", "/c", "./gradlew.bat shadowJar", "-q"});
         }
     }
 
@@ -128,14 +126,14 @@ public class BaseProject {
     protected void generateTests(ProjectStructure projectStructure) throws IOException {
 
         new JavaTestCreator(
-                        projectStructure.getGeneratedJavaWrappers(),
-                        projectStructure.getPathToTestDirectory())
+                projectStructure.getGeneratedJavaWrappers(),
+                projectStructure.getPathToTestDirectory())
                 .generate();
     }
 
     protected void generateWallet()
             throws CipherException, InvalidAlgorithmParameterException, NoSuchAlgorithmException,
-                    NoSuchProviderException, IOException {
+            NoSuchProviderException, IOException {
         projectStructure.createWalletDirectory();
         projectWallet =
                 new ProjectWallet(
@@ -146,50 +144,13 @@ public class BaseProject {
                 projectStructure.getWalletPath());
     }
 
-    public TemplateProvider getTemplateProvider() {
-        TemplateBuilder templateBuilder =
-                new TemplateBuilder()
-                        .withProjectNameReplacement(projectStructure.projectName)
-                        .withPackageNameReplacement(projectStructure.packageName)
-                        .withGradleBatScript("gradlew.bat.template")
-                        .withGradleScript("gradlew.template");
-        if (projectWallet != null) {
+    public abstract P getTemplateProvider();
 
-            templateBuilder.withWalletNameReplacement(projectWallet.getWalletName());
-            templateBuilder.withPasswordFileName(projectWallet.getPasswordFileName());
-        }
-        if (command.equals("new")) {
-            templateBuilder
-                    .withGradleBuild(
-                            JavaVersion.getJavaVersionAsDouble() < 11
-                                    ? "build.gradle.template"
-                                    : "build.gradleJava11.template")
-                    .withSolidityProject("HelloWorld.sol");
-
-        } else if (command.equals("import")) {
-            templateBuilder
-                    .withGradleBuild(
-                            JavaVersion.getJavaVersionAsDouble() < 11
-                                    ? "build.gradleImport.template"
-                                    : "build.gradleImportJava11.template")
-                    .withPathToSolidityFolder(solidityImportPath);
-        }
-        templateBuilder
-                .withGradleSettings("settings.gradle.template")
-                .withWrapperGradleSettings("gradlew-wrapper.properties.template")
-                .withGradlewWrapperJar("gradle-wrapper.jar");
-        if (withSampleCode) {
-            templateBuilder.withMainJavaClass("Template.java");
-        } else {
-            templateBuilder.withMainJavaClass("EmptyTemplate.java");
-        }
-
-        return templateBuilder.build();
-    }
+    public abstract TemplateProvider.TemplateBuilder<P> getTemplateBuilder();
 
     public void createProject()
             throws IOException, InterruptedException, NoSuchAlgorithmException,
-                    NoSuchProviderException, InvalidAlgorithmParameterException, CipherException {
+            NoSuchProviderException, InvalidAlgorithmParameterException, CipherException {
         generateTopLevelDirectories(projectStructure);
         if (withWallet) {
             generateWallet();
@@ -205,5 +166,66 @@ public class BaseProject {
             createFatJar(projectStructure.getProjectRoot());
         }
         progressCounter.setLoading(false);
+    }
+
+    public abstract static class BaseBuilder {
+
+        protected String solidityImportPath;
+        protected boolean withWallet;
+        protected boolean withTests;
+        protected String projectName;
+        protected String packageName;
+        protected String rootDirectory;
+        protected boolean withSampleCode;
+        protected boolean withFatJar;
+        protected String command = "new";
+
+        public <T extends BaseBuilder> BaseBuilder withSolidityFile(
+                final String solidityImportPath) {
+            this.solidityImportPath = solidityImportPath;
+            return this;
+        }
+
+        public <T extends BaseBuilder> BaseBuilder withWalletProvider(boolean withWalletProvider) {
+            this.withWallet = withWalletProvider;
+            return this;
+        }
+
+        public <T extends BaseBuilder> BaseBuilder withSampleCode(boolean withSampleCode) {
+            this.withSampleCode = withSampleCode;
+            return this;
+        }
+
+        public <T extends BaseBuilder> BaseBuilder withTests(boolean withTests) {
+            this.withTests = withTests;
+            return this;
+        }
+
+        public <T extends BaseBuilder> BaseBuilder withFatJar(boolean withFatJar) {
+            this.withFatJar = withFatJar;
+            return this;
+        }
+
+        public <T extends BaseBuilder> BaseBuilder withCommand(String command) {
+            this.command = command;
+            return this;
+        }
+
+        public <T extends BaseBuilder> BaseBuilder withProjectName(String projectName) {
+            this.projectName = projectName;
+            return this;
+        }
+
+        public <T extends BaseBuilder> BaseBuilder withPackageName(String packageName) {
+            this.packageName = packageName;
+            return this;
+        }
+
+        public <T extends BaseBuilder> BaseBuilder withRootDirectory(String rootDirectory) {
+            this.rootDirectory = rootDirectory;
+            return this;
+        }
+
+        protected abstract <T extends BaseProject> T build() throws Exception;
     }
 }

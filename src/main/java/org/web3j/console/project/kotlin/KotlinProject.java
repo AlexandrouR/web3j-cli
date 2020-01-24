@@ -12,18 +12,10 @@
  */
 package org.web3j.console.project.kotlin;
 
-import java.io.IOException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-
 import org.web3j.commons.JavaVersion;
 import org.web3j.console.project.BaseProject;
 import org.web3j.console.project.ProjectStructure;
-import org.web3j.console.project.templates.TemplateBuilder;
-import org.web3j.console.project.templates.kotlin.KotlinTemplateBuilder;
 import org.web3j.console.project.templates.kotlin.KotlinTemplateProvider;
-import org.web3j.crypto.CipherException;
 
 public class KotlinProject extends BaseProject {
     protected KotlinProject(
@@ -44,64 +36,62 @@ public class KotlinProject extends BaseProject {
                 projectStructure);
     }
 
-    public KotlinTemplateProvider getTemplateProvider() {
-        TemplateBuilder templateBuilder =
-                new KotlinTemplateBuilder()
-                        .withProjectNameReplacement(projectStructure.projectName)
-                        .withPackageNameReplacement(projectStructure.packageName)
-                        .withGradleBatScript("gradlew.bat.template")
-                        .withGradleScript("gradlew.template");
-        if (projectWallet != null) {
+    @Override
+    public KotlinTemplateProvider.KotlinTemplateBuilder getTemplateBuilder() {
+        KotlinTemplateProvider.KotlinTemplateBuilder templateBuilder =
+                (KotlinTemplateProvider.KotlinTemplateBuilder)
+                        new KotlinTemplateProvider.KotlinTemplateBuilder()
+                                .withProjectNameReplacement(projectStructure.projectName)
+                                .withPackageNameReplacement(projectStructure.packageName)
+                                .withGradleBatScript("gradlew.bat.template")
+                                .withGradleScript("gradlew.template")
+                                .withWrapperGradleSettings("gradlew-wrapper.properties.template")
+                                .withGradlewWrapperJar("gradle-wrapper.jar")
+                                .withGradleSettings("settings.gradle.template");
 
+        if (projectWallet != null) {
             templateBuilder.withWalletNameReplacement(projectWallet.getWalletName());
             templateBuilder.withPasswordFileName(projectWallet.getPasswordFileName());
         }
+        return templateBuilder;
+    }
+
+    public KotlinTemplateProvider getTemplateProvider() {
+        KotlinTemplateProvider.KotlinTemplateBuilder templateBuilder = getTemplateBuilder();
         if (command.equals("kotlin")) {
             templateBuilder
                     .withGradleBuild(
                             JavaVersion.getJavaVersionAsDouble() < 11
                                     ? "build.gradle.template"
                                     : "build.gradleJava11.template")
-                    .withSolidityProject("HelloWorld.sol");
-
+                    .withSolidityProject("HelloWorld.sol")
+                    .withMainJavaClass("Template-Kotlin");
         } else if (command.equals("import")) {
             templateBuilder
                     .withGradleBuild(
                             JavaVersion.getJavaVersionAsDouble() < 11
                                     ? "build.gradleImport.template"
                                     : "build.gradleImportJava11.template")
-                    .withPathToSolidityFolder(solidityImportPath);
+                    .withPathToSolidityFolder(solidityImportPath)
+                    .withMainJavaClass("EmptyTemplate.java");
         }
-        templateBuilder
-                .withGradleSettings("settings.gradle.template")
-                .withWrapperGradleSettings("gradlew-wrapper.properties.template")
-                .withGradlewWrapperJar("gradle-wrapper.jar");
-        if (withSampleCode) {
-            templateBuilder.withMainJavaClass("Template-Kotlin");
-        } else {
-            templateBuilder.withMainJavaClass("EmptyTemplate.java");
-        }
-
         return (KotlinTemplateProvider) templateBuilder.build();
     }
 
-    public void createProject()
-            throws IOException, InterruptedException, NoSuchAlgorithmException,
-                    NoSuchProviderException, InvalidAlgorithmParameterException, CipherException {
-        generateTopLevelDirectories(projectStructure);
-        if (withWallet) {
-            generateWallet();
-        }
-        getTemplateProvider().generateFiles(projectStructure);
-        progressCounter.processing("Creating " + projectStructure.projectName);
-        buildGradleProject(projectStructure.getProjectRoot());
+    public static class KotlinBuilder extends BaseProject.BaseBuilder {
 
-        if (withTests) {
-            generateTests(projectStructure);
+        @Override
+        protected KotlinProject build() throws Exception {
+            final ProjectStructure projectStructure =
+                    new KotlinProjectStructure(rootDirectory, packageName, projectName);
+            return new KotlinProject(
+                    super.withTests,
+                    super.withFatJar,
+                    super.withWallet,
+                    super.withSampleCode,
+                    super.command,
+                    super.solidityImportPath,
+                    projectStructure);
         }
-        if (withFatJar) {
-            createFatJar(projectStructure.getProjectRoot());
-        }
-        progressCounter.setLoading(false);
     }
 }
